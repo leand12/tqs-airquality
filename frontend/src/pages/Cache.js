@@ -1,10 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import MainStatCard from "components/MainStatCard";
 
 
 const Cache = () => {
+  const [data, setData] = useState(null);
 
-  const data = {
+  const example = {
     numRequests: 32,
     numHits: 22,
     numMisses: 12,
@@ -13,9 +14,11 @@ const Cache = () => {
   const getCache = async () => {
     await fetch(`http://localhost:8080/api/v1/cache`,
       {mode: "cors", headers: {"Access-Control-Allow-Origin": "*"}})
-        .then(response => response.json())
+        .then((res) => res.text())
+        .then((text) => text.length ? JSON.parse(text) : null)
         .then(data => {
             console.log(data);
+            setData(data);
         })
   }
 
@@ -33,7 +36,7 @@ const Cache = () => {
       >Cache Statistics</h1>
       <div style={{ display: "flex", flexWrap: "wrap", flexGrow: 1, justifyContent: "center" }}>
         {
-          Object.entries(data).map(([key, value], index) => (
+          data && Object.entries(data).map(([key, value], index) => (
             <MainStatCard key={index} label={key} value={value} />
           ))
         }

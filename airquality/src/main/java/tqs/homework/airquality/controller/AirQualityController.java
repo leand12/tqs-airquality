@@ -8,10 +8,10 @@ import tqs.homework.airquality.caching.Cache;
 import tqs.homework.airquality.model.AirData;
 import tqs.homework.airquality.service.AirQualityService;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/")
+@CrossOrigin("*")
 public class AirQualityController {
 
     @Autowired
