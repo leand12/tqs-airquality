@@ -7,6 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 import AppsIcon from "@material-ui/icons/Apps";
 
+import Container from 'react-bootstrap/Container';
+
 import {
   Link,
   Outlet,
@@ -60,8 +62,8 @@ export default function Navbar() {
   };
 
   return (
-    <div className={classes.grow} >
-      <AppBar position="static" style={{backgroundColor: "rgba(255, 255, 255, 0.8)", color: "gray"}}>
+    <>
+      <AppBar position="static" style={{backgroundColor: "rgba(255, 255, 255, 0.7)", color: "gray"}}>
         <Toolbar>
           <div className={classes.grow} />
           <div className={classes.navBar}>
@@ -80,7 +82,9 @@ export default function Navbar() {
           </div>
         </Toolbar>
       </AppBar>
-      <Outlet />
-    </div>
+      <Container>
+        <Outlet />
+      </Container>
+    </>
   );
 }
