@@ -45,7 +45,7 @@ public class AirQualityControllerTest {
     }
 
     @Test
-    public void whenGetByCoords_thenReturnAirData() throws Exception {
+    public void whenGetByValidCoords_thenReturnValidAirData() throws Exception {
         when( service.getByCoords( anyDouble(), anyDouble() ) ).thenReturn(
                 new AirData(50, 50));
 
@@ -58,7 +58,17 @@ public class AirQualityControllerTest {
     }
 
     @Test
-    public void whenGetByCity_thenReturnAirData() throws Exception {
+    public void whenGetByInvalidCoords_thenReturnNotFound() throws Exception {
+        when( service.getByCoords( anyDouble(), anyDouble() ) ).thenReturn( null );
+
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/geo?lat=50&lon=50")
+                .contentType(MediaType.APPLICATION_JSON) )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void whenGetByValidCity_thenReturnValidAirData() throws Exception {
         when( service.getByCity( anyString() ) ).thenReturn( new AirData("Aveiro") );
 
         servlet.perform( MockMvcRequestBuilders.get("/api/v1/city/Aveiro")
@@ -67,47 +77,15 @@ public class AirQualityControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("city_name").value("Aveiro"));
     }
-/**
-    @Test
-    public void getCarByName() throws Exception {
-        when( carService.getCarByName( anyString(), anyString() ) ).thenReturn(
-                Optional.of(new Car("cybertruck", "tesla")));
-
-        servlet.perform( MockMvcRequestBuilders.get("/cars/tesla/cybertruck")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("maker").value("tesla"))
-                .andExpect(jsonPath("model").value("cybertruck"));
-    }
 
     @Test
-    public void getAllCars() throws Exception {
-        Car tesla1 = new Car("cybertruck", "tesla");
-        Car tesla2 = new Car("X", "tesla");
-        when( carService.getAllCars() ).thenReturn( Arrays.asList(tesla1, tesla2) );
+    public void whenGetByInvalidCity_thenReturnNotFound() throws Exception {
+        when( service.getByCity( anyString() ) ).thenReturn( null );
 
-        servlet.perform( MockMvcRequestBuilders.get("/cars").contentType(MediaType.APPLICATION_JSON))
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/city/Aveiro")
+                .contentType(MediaType.APPLICATION_JSON) )
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$[0].model", is("cybertruck")))
-                .andExpect(jsonPath("$[1].model", is("X")));
+                .andExpect(status().isNotFound());
     }
 
-    @Test
-    public void createCar() throws Exception {
-        Car tesla = new Car("cybertruck", "tesla");
-        when( carService.saveCar( any() ) ).thenReturn( tesla );
-
-        servlet.perform( MockMvcRequestBuilders.post("/cars").contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.toJson(tesla)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.model", is("cybertruck")));
-    }
-**/
 }

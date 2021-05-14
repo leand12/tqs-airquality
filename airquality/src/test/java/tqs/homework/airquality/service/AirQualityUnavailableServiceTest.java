@@ -42,14 +42,17 @@ public class AirQualityUnavailableServiceTest {
     }
 
     @Test
-    public void whenGetByCoords_thenReturnRequest() {
+    public void whenGetByValidCoords_thenReturnValidAirData() {
         AirData coordsRequest = service.getByCoords(50, 50);
-        AirData coordsRequest2 = service.getByCoords(-91, 181);
 
         assertThat(coordsRequest).isNotNull();
         assertThat(coordsRequest.getLat()).isEqualTo(50);
         assertThat(coordsRequest.getLon()).isEqualTo(50);
-        assertThat(coordsRequest2).isNull();
+    }
+
+    @Test
+    public void whenGetByInvalidCoords_thenReturnNull() {
+        assertThat(service.getByCoords(-91, 181)).isNull();
     }
 
     @Test

@@ -1,5 +1,7 @@
 package tqs.homework.airquality.caching;
 
+import org.awaitility.Awaitility;
+import org.awaitility.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tqs.homework.airquality.model.AirData;
@@ -30,6 +32,7 @@ public class CacheTest {
         String key = "key";
         cache.cacheRequest(key, request);
         Thread.sleep(2000);
+//        Awaitility.setDefaultTimeout(Duration.FIVE_SECONDS);
 
         assertThat(cache.getCachedRequest(key)).isNull();
         assertThat(cache.getNumRequests()).isEqualTo(1);

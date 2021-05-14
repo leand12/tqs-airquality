@@ -9,9 +9,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tqs.homework.airquality.caching.Cache;
 import tqs.homework.airquality.model.AirData;
+import tqs.homework.airquality.model.AirMetrics;
 import tqs.homework.airquality.service.AirQualityService;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
@@ -45,7 +47,7 @@ public class AirQualityRestAssuredTest {
     }
 
     @Test
-    public void whenGetByCoords_thenReturnAirData() {
+    public void whenGetByValidCoords_thenReturnValidAirData() {
         when( service.getByCoords( anyDouble(), anyDouble() ) ).thenReturn(
                 new AirData(50, 50));
 
@@ -59,13 +61,35 @@ public class AirQualityRestAssuredTest {
     }
 
     @Test
-    public void whenGetByCity_thenReturnAirData() {
+    public void whenGetByInvalidCoords_thenReturnNotFound() {
+        when( service.getByCoords( anyDouble(), anyDouble() ) ).thenReturn(null);
+
+        RestAssuredMockMvc.given().when()
+                .get("/api/v1/geo?lat=50&lon=50")
+                .then().assertThat().statusCode(404);
+
+        verify(service, times(1)).getByCoords(anyDouble(), anyDouble());
+    }
+
+    @Test
+    public void whenGetByValidCity_thenReturnValidAirData() {
         when( service.getByCity( anyString() ) ).thenReturn( new AirData("Aveiro") );
 
         RestAssuredMockMvc.given().when()
                 .get("/api/v1/city/Aveiro")
                 .then().assertThat().statusCode(200)
                 .and().body("city_name", equalTo("Aveiro"));
+
+        verify(service, times(1)).getByCity(anyString());
+    }
+
+    @Test
+    public void whenGetByInvalidCity_thenReturnNotFound() {
+        when( service.getByCity( anyString() ) ).thenReturn( null );
+
+        RestAssuredMockMvc.given().when()
+                .get("/api/v1/city/Aveiro")
+                .then().assertThat().statusCode(404);
 
         verify(service, times(1)).getByCity(anyString());
     }

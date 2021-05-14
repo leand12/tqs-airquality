@@ -11,7 +11,7 @@ import tqs.homework.airquality.service.AirQualityService;
 
 @RestController
 @RequestMapping("/api/v1/")
-@CrossOrigin("*")
+@CrossOrigin("http://localhost:3000")
 public class AirQualityController {
 
     @Autowired
@@ -19,7 +19,7 @@ public class AirQualityController {
 
     @GetMapping("/cache")
     public ResponseEntity<Cache> getCache() {
-        Cache request = service.getCache();
+        var request = service.getCache();
         if (request != null)
             return new ResponseEntity<>(request, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -35,7 +35,7 @@ public class AirQualityController {
     }
 
     @GetMapping("/city/{city}")
-    private ResponseEntity<AirData> getAirDataByCity(@PathVariable String city) {
+    public ResponseEntity<AirData> getAirDataByCity(@PathVariable String city) {
         AirData request = service.getByCity(city);
         if (request != null)
             return new ResponseEntity<>(request, HttpStatus.OK);

@@ -30,11 +30,10 @@ public class AirQualityServiceTest {
     public void setUp() {
         AirData cityRequest = new AirData("Aveiro");
         AirData coordsRequest = new AirData(50, 50);
-        AirData coordsRequest2 = new AirData(-91, 181);
 
         when( repository1.getByCoords(50, 50) ).thenReturn( coordsRequest );
         when( repository1.getByCity("Aveiro") ).thenReturn( cityRequest );
-        when( repository1.getByCoords(-91, 181) ).thenReturn( coordsRequest2 );
+        when( repository1.getByCoords(-91, 181) ).thenReturn( null );
         when( repository1.getByCity("?") ).thenReturn( null );
 
         when( repository2.getByCoords(50, 50) ).thenReturn( coordsRequest );
@@ -43,16 +42,17 @@ public class AirQualityServiceTest {
     }
 
     @Test
-    public void whenGetByCoords_thenReturnRequest() {
+    public void whenGetByValidCoords_thenReturnValidRequest() {
         AirData coordsRequest = service.getByCoords(50, 50);
-        AirData coordsRequest2 = service.getByCoords(-91, 181);
 
         assertThat(coordsRequest).isNotNull();
         assertThat(coordsRequest.getLat()).isEqualTo(50);
         assertThat(coordsRequest.getLon()).isEqualTo(50);
-        assertThat(coordsRequest2).isNotNull();
-        assertThat(coordsRequest2.getLat()).isEqualTo(-91);
-        assertThat(coordsRequest2.getLon()).isEqualTo(181);
+    }
+
+    @Test
+    public void whenGetByInvalidCoords_thenReturnNull() {
+        assertThat(service.getByCoords(-91, 181)).isNull();
     }
 
     @Test

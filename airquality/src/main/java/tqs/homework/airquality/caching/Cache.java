@@ -15,9 +15,9 @@ public class Cache {
     private int numMisses = 0;
 
     @JsonIgnore
-    private Map<String, AirData> requests = new HashMap<>();
+    private final Map<String, AirData> requests = new HashMap<>();
     @JsonIgnore
-    private Map<String, Long> expiration = new HashMap<>();
+    private final Map<String, Long> expiration = new HashMap<>();
 
     public Cache(int expDuration) {
         this.expDuration = expDuration;
@@ -52,7 +52,7 @@ public class Cache {
 
     public void cacheRequest(String key, AirData request) {
         requests.put(key, request);
-        expiration.put(key, getCurTime() + expDuration * 1000);
+        expiration.put(key, getCurTime() + expDuration * 1000L);
     }
 
     private void remCachedRequest(String key) {

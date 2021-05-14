@@ -1,6 +1,9 @@
 package tqs.homework.airquality.controller;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,13 +18,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AirQualityControllerIT {
 
     @Autowired
     private MockMvc servlet;
 
     @Test
-    public void whenGetCache_thenReturnCache() throws Exception {
+    @Order(1)
+    public void whenGetCacheBeforeRequests_thenReturnValidCache() throws Exception {
         servlet.perform( MockMvcRequestBuilders.get("/api/v1/cache")
                 .contentType(MediaType.APPLICATION_JSON) )
                 .andDo(print())
@@ -32,7 +37,27 @@ public class AirQualityControllerIT {
     }
 
     @Test
-    public void whenGetByCoords_thenReturnAirData() throws Exception {
+    @Order(2)
+    public void whenGetCacheAfterSomeRequests_thenReturnValidCache() throws Exception {
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/city/Aveiro") );
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/geo?lat=0&lon=0") );
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/city/Aveiro") );
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/geo?lat=0&lon=0") );
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/city/Porto") );
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/geo?lat=10&lon=10") );
+
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/cache")
+                .contentType(MediaType.APPLICATION_JSON) )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("numRequests").value(6))
+                .andExpect(jsonPath("numMisses").value(4))
+                .andExpect(jsonPath("numHits").value(2));
+    }
+
+    @Test
+    @Order(3)
+    public void whenGetByValidCoords_thenReturnValidAirData() throws Exception {
         servlet.perform( MockMvcRequestBuilders.get("/api/v1/geo?lat=50&lon=50")
                 .contentType(MediaType.APPLICATION_JSON) )
                 .andDo(print())
@@ -42,11 +67,35 @@ public class AirQualityControllerIT {
     }
 
     @Test
-    public void whenGetByCity_thenReturnAirData() throws Exception {
+    @Order(4)
+    public void whenGetByInvalidCoords_thenReturnCorrectStatus() throws Exception {
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/geo?lat=-91&lon=181")
+                .contentType(MediaType.APPLICATION_JSON) )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/geo?lat=lat&lon=lon")
+                .contentType(MediaType.APPLICATION_JSON) )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(5)
+    public void whenGetByValidCity_thenReturnValidAirData() throws Exception {
         servlet.perform( MockMvcRequestBuilders.get("/api/v1/city/Aveiro")
                 .contentType(MediaType.APPLICATION_JSON) )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("city_name").value("Aveiro"));
+    }
+
+    @Test
+    @Order(6)
+    public void whenGetByInvalidCity_thenReturnNotFound() throws Exception {
+        servlet.perform( MockMvcRequestBuilders.get("/api/v1/city/c")
+                .contentType(MediaType.APPLICATION_JSON) )
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

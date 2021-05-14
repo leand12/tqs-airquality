@@ -1,6 +1,5 @@
 package tqs.homework.airquality.repository;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,9 +16,19 @@ public class WeatherBitRepositoryTest {
     private WeatherBitRepository repository;
 
     @Test
-    public void whenGetByCoords_thenReturnAirData() {
-        assertThat(repository.getByCoords(-90, 180)).isInstanceOf(AirData.class);
-        assertThat(repository.getByCoords(-91, 181)).isInstanceOf(AirData.class);
+    public void whenGetByValidCoords_thenReturnAirData() {
+        double lat = -90;
+        double lon = 180;
+        AirData airData = repository.getByCoords(lat, lon);
+
+        assertThat(airData).isInstanceOf(AirData.class);
+        assertThat(airData.getLat()).isEqualTo(lat);
+        assertThat(airData.getLon()).isEqualTo(lon);
+    }
+
+    @Test
+    public void whenGetByInvalidCoords_thenReturnAirData() {
+        assertThat(repository.getByCoords(-91, 181)).isNull();
     }
 
     @Test
