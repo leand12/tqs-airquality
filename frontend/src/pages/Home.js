@@ -51,7 +51,6 @@ const Home = () => {
               return res.json();
           })
           .then(data => {
-              console.log(data);
               setData(data);
               setLoading(false);
           })
@@ -68,12 +67,10 @@ const Home = () => {
       await fetch(`http://localhost:8080/api/v1/geo?lat=${lat}&lon=${lon}`,
         {mode: "cors", headers: {"Access-Control-Allow-Origin": "*"}})
           .then((res) => {
-            console.log("ok:", res)
             if (res.status === 200)
               return res.json();
           })
           .then(data => {
-              console.log(data);
               setData(data);
               setLoading(false);
           })
@@ -148,7 +145,7 @@ const Home = () => {
         data === false ? null : data ? (
           <>
             <Row>
-              <span id="response" className={classes.value}>{`${data.city_name}, (${data.lat.toFixed(6)}, ${data.lon.toFixed(6)})`}</span>
+              <span id="response" className={classes.value}>{`${data.city_name ? data.city_name + "," : ""} (${data.lat.toFixed(6)}, ${data.lon.toFixed(6)})`}</span>
             </Row>
 
             <MainStatCard color={true} label={"aqi"} value={data["data"][0]["aqi"]} />
