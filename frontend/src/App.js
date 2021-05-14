@@ -3,6 +3,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  Navigate,
 } from 'react-router-dom';
 
 import Navbar from 'layout/Navbar';
@@ -16,7 +17,9 @@ function App() {
         <Route path="/" element={<Navbar />}>
           <Route path="/app" element={<Home />} />
           <Route path="/cache" element={<Cache />} />
+          <Route element={<Navigate to="/app" />} />
         </Route>
+        <Route path="*" element={<Navigate to="/app" />} />
       </Routes>
     </BrowserRouter>
   );

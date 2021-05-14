@@ -52,7 +52,7 @@ export default function StatCard({label, value}) {
         <div className={classes.value}>
           {value}
         </div>
-        <Formula>{labelNames[label]}</Formula>
+        <Formula>{labelNames[label] || label}</Formula>
       </CardContent>
     </Card>
   );
