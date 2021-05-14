@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import MainStatCard from "components/MainStatCard";
 
 
@@ -9,6 +9,19 @@ const Cache = () => {
     numHits: 22,
     numMisses: 12,
   }
+
+  const getCache = async () => {
+    await fetch(`http://localhost:8080/api/v1/cache`,
+      {mode: "cors", headers: {"Access-Control-Allow-Origin": "*"}})
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+  }
+
+  useEffect(async () => {
+    await getCache();
+  },[]);
 
   return (
     <>
