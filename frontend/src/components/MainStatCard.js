@@ -52,9 +52,9 @@ export default function MainStatCard({label, value, color}) {
   const colorStyle = color ? {color: getColor()} : {};
 
   return (
-    <Card className={classes.root} variant="outlined" style={cardStyle}>
+    <Card name="card" className={classes.root} variant="outlined" style={cardStyle}>
       <CardContent className="text-center">
-        <div className={classes.value} style={colorStyle}>
+        <div id={label} className={classes.value} style={colorStyle}>
           {value}
         </div>
         <div className={classes.label} style={colorStyle}>

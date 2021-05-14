@@ -14,8 +14,7 @@ const Cache = () => {
   const getCache = async () => {
     await fetch(`http://localhost:8080/api/v1/cache`,
       {mode: "cors", headers: {"Access-Control-Allow-Origin": "*"}})
-        .then((res) => res.text())
-        .then((text) => text.length ? JSON.parse(text) : null)
+        .then((res) => res.json())
         .then(data => {
             console.log(data);
             setData(data);

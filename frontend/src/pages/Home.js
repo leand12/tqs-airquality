@@ -10,7 +10,6 @@ import {
 
 import StatCard from "components/StatCard";
 import MainStatCard from "components/MainStatCard";
-import { SignalCellularNullOutlined } from "@material-ui/icons";
 
 
 const useStyles = makeStyles({
@@ -47,8 +46,10 @@ const Home = () => {
       setLoading(true);
       await fetch(`http://localhost:8080/api/v1/city/${city}`,
         {mode: "cors", headers: {"Access-Control-Allow-Origin": "*"}})
-          .then((res) => res.text())
-          .then((text) => text.length ? JSON.parse(text) : null)
+          .then((res) => {
+            if (res.status === 200)
+              return res.json();
+          })
           .then(data => {
               console.log(data);
               setData(data);
@@ -66,8 +67,11 @@ const Home = () => {
       setLoading(true);
       await fetch(`http://localhost:8080/api/v1/geo?lat=${lat}&lon=${lon}`,
         {mode: "cors", headers: {"Access-Control-Allow-Origin": "*"}})
-          .then((res) => res.text())
-          .then((text) => text.length ? JSON.parse(text) : null)
+          .then((res) => {
+            console.log("ok:", res)
+            if (res.status === 200)
+              return res.json();
+          })
           .then(data => {
               console.log(data);
               setData(data);
@@ -108,7 +112,7 @@ const Home = () => {
             aria-describedby="basic-addon2"
           />
           <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={submitCity}>Search</Button>
+            <Button id="city" variant="outline-secondary" onClick={submitCity}>Search</Button>
           </InputGroup.Append>
         </InputGroup>
         </Col>
@@ -129,7 +133,7 @@ const Home = () => {
             maxLength="10"
           />
           <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={submitCoords}>Search</Button>
+            <Button id="geo" variant="outline-secondary" onClick={submitCoords}>Search</Button>
           </InputGroup.Append>
         </InputGroup>
         </Col>
@@ -141,10 +145,10 @@ const Home = () => {
             <span className={classes.value}>Loading...</span>
           </Row>
         ) : 
-        data === false ? null : data != null ? (
+        data === false ? null : data ? (
           <>
             <Row>
-              <span className={classes.value}>{data.city_name}{`, (${data.lat.toFixed(6)}, ${data.lon.toFixed(6)})`}</span>
+              <span id="response" className={classes.value}>{`${data.city_name}, (${data.lat.toFixed(6)}, ${data.lon.toFixed(6)})`}</span>
             </Row>
 
             <MainStatCard color={true} label={"aqi"} value={data["data"][0]["aqi"]} />
@@ -158,7 +162,7 @@ const Home = () => {
           </>
       ) : (
           <Row>
-            <span className={classes.value}>Not Found</span>
+            <span id="response" className={classes.value}>Not Found</span>
           </Row>
       )}
     </>

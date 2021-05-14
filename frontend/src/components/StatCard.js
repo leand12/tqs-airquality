@@ -47,9 +47,9 @@ export default function StatCard({label, value}) {
   }
 
   return (
-    <Card className={classes.root} variant="outlined" style={cardStyle}>
+    <Card name="card" className={classes.root} variant="outlined" style={cardStyle}>
       <CardContent className="text-center">
-        <div className={classes.value}>
+        <div id={label} className={classes.value}>
           {value}
         </div>
         <Formula>{labelNames[label] || label}</Formula>
