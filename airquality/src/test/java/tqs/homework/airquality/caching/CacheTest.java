@@ -1,16 +1,11 @@
 package tqs.homework.airquality.caching;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import tqs.homework.airquality.model.AirData;
-import tqs.homework.airquality.model.AirMetrics;
-
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class CacheTest {
     private Cache cache;

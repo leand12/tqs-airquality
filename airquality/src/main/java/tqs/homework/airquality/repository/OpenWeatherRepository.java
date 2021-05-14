@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 @Repository
 public class OpenWeatherRepository implements IAirQualityRepository {
     private static final Logger logger = Logger.getLogger(OpenWeatherRepository.class.getName());
+    private final String BASE_URL = "http://api.openweathermap.org/data/2.5/air_pollution";
+    private final String API_KEY = "b9632828cc8887780bb8e437a7c55f3a";
     private RestTemplate restTemplate = new RestTemplate();
-    private String BASE_URL = "http://api.openweathermap.org/data/2.5/air_pollution";
-    private String API_KEY = "b9632828cc8887780bb8e437a7c55f3a";
 
     @Override
     public AirData getByCity(String city) {

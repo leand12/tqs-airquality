@@ -14,13 +14,17 @@ import java.util.logging.Logger;
 @Repository
 public class WeatherBitRepository implements IAirQualityRepository {
     private static final Logger logger = Logger.getLogger(WeatherBitRepository.class.getName());
-    RestTemplate restTemplate = new RestTemplate();
-    String BASE_URL = "https://api.weatherbit.io/v2.0/";
-    String API_KEY = "1f123a42ce244e258ee60f3911e4518e";
+    private final String BASE_URL = "https://api.weatherbit.io/v2.0/";
+    private final String API_KEY = "1f123a42ce244e258ee60f3911e4518e";
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public AirData getByCoords(double lat, double lon) {
         ResponseEntity<String> response;
+
+        if (lat < -90 || lat > 90 || lon < -180 || lon > 180)
+            return null;
+
         try {
             response = restTemplate.getForEntity(BASE_URL
                 + "current/airquality?lat=" + lat + "&lon=" + lon + "&key=" + API_KEY, String.class);

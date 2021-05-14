@@ -20,19 +20,25 @@ public class AirQualityController {
     @GetMapping("/cache")
     public ResponseEntity<Cache> getCache() {
         Cache request = service.getCache();
-        return new ResponseEntity<>(request, HttpStatus.OK);
+        if (request != null)
+            return new ResponseEntity<>(request, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/geo")
     public ResponseEntity<AirData> getAirDataByCoords(@RequestParam(value = "lat") double lat,
-                                               @RequestParam(value = "lon") double lon) {
+                                                      @RequestParam(value = "lon") double lon) {
         AirData request = service.getByCoords(lat, lon);
-        return new ResponseEntity<>(request, HttpStatus.OK);
+        if (request != null)
+            return new ResponseEntity<>(request, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/city/{city}")
     private ResponseEntity<AirData> getAirDataByCity(@PathVariable String city) {
         AirData request = service.getByCity(city);
-        return new ResponseEntity<>(request, HttpStatus.OK);
+        if (request != null)
+            return new ResponseEntity<>(request, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
